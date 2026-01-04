@@ -1,221 +1,201 @@
-# Enhanced Zsh Configuration
+# 🛠️ Interactive Zsh Setup & Tooling Installer
 
-A **minimal, fast, and safe configuration** designed for developers who want a powerful terminal without unnecessary bloat. Built on **Oh My Zsh** and **Powerlevel10k**, with sensible defaults, productivity aliases, and safety-focused behavior.
+A **dependency-aware, interactive, and explainable setup system** for Zsh-based developer environments.
 
-> 📖 **For comprehensive documentation**, including detailed aliases reference, functions guide, troubleshooting tips, and customization examples, see [README-detailed.md](README-detailed.md).
+This project lets you:
+- Install tools **safely** with dependency resolution
+- Select **only the modules you need**
+- Preview changes with **dry-run**
+- Understand **why** something is installed
+- Visualize the **dependency graph**
 
-## 🚀 Quick Setup
-
-To automatically set up the Zsh configuration, run the setup script:
-
-```bash
-# Clone this repository
-git clone https://github.com/jatingarg36/ZSHRC.git ~/zshrc-config
-cd ~/zshrc-config
-
-# Run the setup script
-bash setup.sh
-```
-
-The setup script will automatically install all required dependencies, configure your `.zshrc` file, and set up tmux configuration (if tmux is installed). On macOS, it also installs `cowsay` and `lolcat` via Homebrew.
-
----
-
-## 📑 Table of Contents
-
-- [Features](#-features)
-- [Requirements](#-requirements)
-- [Installation](#-installation)
-- [Minimal Setup](#-minimal-setup)
-- [Configuration](#-configuration)
-- [Aliases & Functions](#-aliases--functions)
-- [Safety & Performance](#-safety--performance)
-- [Troubleshooting](#-troubleshooting)
-- [Updating](#-updating)
-- [Contributing](#-contributing)
-- [License](#-license)
+Built for **power users**, **senior engineers**, and **dotfile minimalists**.
 
 ---
 
 ## ✨ Features
 
-- Fast **Powerlevel10k** prompt
-- Smart autosuggestions & syntax highlighting
-- Optimized startup with caching & lazy loading
-- Git, Docker, system, and navigation aliases
-- Safe defaults to avoid accidental data loss
+- ✅ Dependency graph with automatic skipping
+- ✅ Interactive module selection
+- ✅ Install specific modules only
+- ✅ `--dry-run` for safe previews
+- ✅ `--yes` for CI / automation
+- ✅ `--graph` to visualize dependencies
+- ✅ `--explain <module>` for clarity
+- ✅ Idempotent & re-runnable
+- ✅ Modular & extensible architecture
+- ✅ Explicit `--set-shell` flag to safely set Zsh as the default shell
+- ✅ Automatic CI detection to skip shell changes in CI/CD environments
+
 
 ---
 
-## 📋 Requirements
+## 📁 Project Structure
 
-### Required
-
-- **Zsh ≥ 5.0.8**
-- **Oh My Zsh**
-- **Powerlevel10k** theme
-- **zsh-autosuggestions** plugin
-- **zsh-syntax-highlighting** plugin
-
-### Recommended
-
-- **Nerd Font** (required for prompt icons) [https://www.nerdfonts.com/](https://www.nerdfonts.com/)
-
-### Optional
-
-- `tmux` - Terminal multiplexer (configuration file will be installed automatically)
-- `fzf`, `tree`, `neofetch`, `ffmpeg`, `pygments`, `cmatrix`, `speedtest-cli`
-- `cowsay`, `lolcat` (macOS only, installed via Homebrew by setup script)
+```text
+setup/
+├── setup.sh
+├── lib/                # Core engine & utilities
+├── modules/            # Installable modules
+├── zshrc
+├── tmux.conf
+└── README.md
+````
 
 ---
 
-## 🚀 Installation
-
-### 1. Backup existing config
+## 🚀 Quick Start
 
 ```bash
-cp ~/.zshrc ~/.zshrc.backup.$(date +%Y%m%d_%H%M%S) 2>/dev/null || true
+git clone <your-repo-url>
+cd setup
+chmod +x setup.sh
+./setup.sh
 ```
 
-### 2. Install
+This launches an **interactive menu**.
+
+---
+
+## 🔧 Usage
+
+### Install Everything (interactive)
 
 ```bash
-git clone https://github.com/jatingarg36/ZSHRC.git ~/zshrc-config
-cd ~/zshrc-config
-cp zshrc ~/.zshrc
+./setup.sh
 ```
 
-### 3. Configure prompt
+### Install Specific Modules
 
 ```bash
-p10k configure
+./setup.sh tmux fzf config
 ```
 
-### 4. Reload
+### List Available Modules
 
 ```bash
-source ~/.zshrc
+./setup.sh --list
+```
+
+### Dry Run (no changes made)
+
+```bash
+./setup.sh --dry-run tmux
+```
+
+### Non-interactive / CI Mode
+
+```bash
+./setup.sh --yes zsh ohmyzsh p10k
+```
+
+By default, this setup **does not change your login shell** for safety reasons. 
+If you explicitly want to make **Zsh your default shell**, use the `--set-shell` flag.
+
+### Set Zsh as default shell
+
+```bash
+./setup.sh --set-shell
+```
+This will:
+
+Verify zsh is installed
+
+Ensure it exists in /etc/shells
+
+Change your default login shell using chsh
+
+> ⚠️ You may be prompted for your system password.
+
+---
+
+## 🧠 Dependency Graph
+
+```bash
+./setup.sh --graph
+```
+
+Example output:
+
+```text
+zsh
+├── ohmyzsh
+│   ├── p10k
+│   └── zsh-autosuggestions
+├── brew
+│   ├── tmux
+│   └── fzf
 ```
 
 ---
 
-## ⚡ Minimal Setup
-
-If you want the fastest and cleanest experience:
-
-- Enable only these plugins:
-  - `git`
-  - `zsh-autosuggestions`
-  - `zsh-syntax-highlighting`
-- Skip optional tools (`fzf`, `neofetch`, fun commands)
-
----
-
-## ⚙️ Configuration
-
-### Editor
-
-Default editor is **Sublime Text**. For **VS Code**:
+## 📖 Explain a Module
 
 ```bash
-alias zshrc='code ~/.zshrc'
-alias e='code .'
-alias edit='code'
+./setup.sh --explain tmux
 ```
 
-Reload after changes:
+Output:
 
-```bash
-reload
+```text
+Module: tmux
+Description : Terminal multiplexer
+Depends on  : brew
+Required by : none
 ```
 
 ---
 
-## 🔧 Aliases & Functions
+## 🧩 Modules Included
 
-### ⚠️ Destructive (use carefully)
-
-```bash
-gnope       # git reset --hard && git clean -df
-dclean      # docker system prune -af
-dstop       # stop all containers
-emptytrash  # permanently delete ~/.trash
-```
-
-### Common
-
-```bash
-# Navigation
-.2 .3 .4 .5
-
-# Git
-gaa gcm gco gcb gpl gst glog gwip
-
-# System
-cpu mem ports myip localip
-```
-
-### Functions (examples)
-
-```bash
-mkcd extract backup trash json weather
-```
-
-> Linux only: `remind` requires `notify-send`
+* `zsh`
+* `brew` (macOS)
+* `tmux`
+* `ohmyzsh`
+* `p10k`
+* `zsh-autosuggestions`
+* `zsh-syntax-highlighting`
+* `fzf`
+* `tree`
+* `neofetch`
+* `ffmpeg`
+* `config` (zshrc, tmux.conf, directories)
 
 ---
 
-## 🔒 Safety & Performance
+## 🖼️ Screenshots
 
-- Safe `rm` with confirmation
-- Protected overwrite for `cp` / `mv`
-- Trash-based deletion
-- Cached completions
-- Lazy-loaded plugins
+### Interactive Menu
+![Interactive Menu](docs/screenshots/interactive-menu.png)
 
----
+### Dependency Graph
+![Dependency Graph](docs/screenshots/dependency-graph.png)
 
-## 🐛 Troubleshooting
-
-### Prompt icons missing
-
-- Install a Nerd Font
-- Re-run `p10k configure`
-
-### Slow startup
-
-```bash
-zsh -xv
-```
-
-Disable unused plugins or optional tools.
+### Explain Command
+![Explain](docs/screenshots/explain-tmux.png)
 
 ---
 
-## 🔄 Updating
+## ⚠️ Notes
 
-```bash
-cd ~/zshrc-config
-git pull
-cp zshrc ~/.zshrc
-source ~/.zshrc
-```
+* Powerlevel10k requires a **Nerd Font**
+  👉 [https://www.nerdfonts.com](https://www.nerdfonts.com)
+* Linux users may need `sudo` privileges
+* Safe to re-run anytime
 
 ---
 
 ## 🤝 Contributing
 
-- Fork the repository
-- Keep changes minimal and well-documented
-- Submit focused pull requests
+Contributions are welcome!
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
-## 📄 License
+## 📜 License
 
 This configuration is provided as-is. Feel free to customize it for your needs.
 
----
+--- 
 
-**Simple. Fast. Safe. Enjoy your Zsh ⚡**
-
+Simple. Fast. Safe. Enjoy your Zsh ⚡

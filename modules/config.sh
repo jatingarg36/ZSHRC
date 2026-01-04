@@ -6,30 +6,36 @@ ZSHRC_SOURCE="$SCRIPT_DIR/zshrc"
 TMUX_CONF_SOURCE="$SCRIPT_DIR/tmux.conf"
 
 register "config" "zsh tmux ohmyzsh" \
-  '[ -f "$HOME/.zshrc" -a -f "$HOME/.tmux.conf" ]' \
+  'false' \
   '
   ts="$(date +%Y%m%d_%H%M%S)"
 
   # ---- zshrc ----
   if [[ -f "$ZSHRC_SOURCE" ]]; then
-    [[ -f "$HOME/.zshrc" ]] && cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$ts"
+    if [[ -f "$HOME/.zshrc" ]]; then
+      cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$ts"
+      success "Backed up existing .zshrc"
+    fi
     cp "$ZSHRC_SOURCE" "$HOME/.zshrc"
-    success ".zshrc installed"
+    success ".zshrc updated"
   else
-    warn "zshrc not found in repo"
+    warn "zshrc not found in repository"
   fi
 
   # ---- tmux.conf ----
   if [[ -f "$TMUX_CONF_SOURCE" ]]; then
-    [[ -f "$HOME/.tmux.conf" ]] && cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$ts"
+    if [[ -f "$HOME/.tmux.conf" ]]; then
+      cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$ts"
+      success "Backed up existing .tmux.conf"
+    fi
     cp "$TMUX_CONF_SOURCE" "$HOME/.tmux.conf"
-    success ".tmux.conf installed"
+    success ".tmux.conf updated"
   else
-    warn "tmux.conf not found in repo"
+    warn "tmux.conf not found in repository"
   fi
 
   # ---- directories ----
   mkdir -p "$HOME/.zsh/cache" "$HOME/.trash" "$HOME/notes"
-  success "Required directories created"
+  success "Required directories ensured"
   ' \
-  "Installs zsh and tmux configuration files"
+  "Installs or updates zsh and tmux configuration files"

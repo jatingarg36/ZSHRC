@@ -31,3 +31,9 @@ case "$OS_TYPE" in
   Linux)  OS_TYPE="linux" ;;
   *) error "Unsupported OS"; exit 1 ;;
 esac
+
+# CI detection
+IS_CI=false
+if [[ -n "${CI:-}" || -n "${GITHUB_ACTIONS:-}" || -n "${GITLAB_CI:-}" ]]; then
+  IS_CI=true
+fi
