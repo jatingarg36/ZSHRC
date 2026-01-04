@@ -15,7 +15,7 @@ cd ~/zshrc-config
 bash setup.sh
 ```
 
-The setup script will automatically install all required dependencies and configure your `.zshrc` file.
+The setup script will automatically install all required dependencies, configure your `.zshrc` file, and set up tmux configuration (if tmux is installed). On macOS, it also installs `cowsay` and `lolcat` via Homebrew.
 
 ## 🌟 Features
 
@@ -68,6 +68,7 @@ Before installing this `.zshrc` configuration, ensure you have the following ins
 
 ### Optional (for additional features)
 
+- **tmux** - Terminal multiplexer (configuration file `~/.tmux.conf` will be installed automatically if tmux is present)
 - **fzf** (fuzzy finder) - for `fcd`, `fopen`, `openg` functions
 - **VS Code** or **Sublime Text** - for editor shortcuts
 - **tree** - for directory tree visualization
@@ -75,6 +76,10 @@ Before installing this `.zshrc` configuration, ensure you have the following ins
 - **cmatrix** - for Matrix effect
 - **neofetch** - for system info display
 - **ffmpeg** - for video to GIF conversion
+- **cowsay**, **lolcat** (macOS only) - Installed automatically via Homebrew by the setup script
+
+> 🔧 **For tmux configuration and usage guide**, see [README-tmux.md](README-tmux.md) for a complete reference on terminal multiplexing, sessions, windows, panes, and power-user workflows.
+
 
 ## 🚀 Installation
 
@@ -264,6 +269,132 @@ dcr       # docker-compose restart
 dlog      # docker-compose logs -f
 dstop     # docker stop $(docker ps -aq)
 dclean    # docker system prune -af
+```
+
+### Kubernetes Aliases
+
+
+#### General
+```bash
+k         # kubectl
+kl        # kubectl logs
+kexec     # kubectl exec -it
+kpf       # kubectl port-forward
+kaci      # kubectl auth can-i
+kat       # kubectl attach
+kapir     # kubectl api-resources
+kapiv     # kubectl api-versions
+```
+#### Get commands
+```bash
+kg        # kubectl get
+kgns      # kubectl get ns
+kgp       # kubectl get pods
+kgs       # kubectl get secrets
+kgd       # kubectl get deploy
+kgrs      # kubectl get rs
+kgss      # kubectl get sts
+kgds      # kubectl get ds
+kgcm      # kubectl get configmap
+kgcj      # kubectl get cronjob
+kgj       # kubectl get job
+kgsvc     # kubectl get svc -o wide
+kgn       # kubectl get no -o wide
+kgr       # kubectl get roles
+kgrb      # kubectl get rolebindings
+kgcr      # kubectl get clusterroles
+kgsa      # kubectl get sa
+kgnp      # kubectl get netpol
+```
+
+#### Edit commands
+```bash
+ke        # kubectl edit
+kens      # kubectl edit ns
+kes       # kubectl edit secrets
+ked       # kubectl edit deploy
+kers      # kubectl edit rs
+kess      # kubectl edit sts
+keds      # kubectl edit ds
+kesvc     # kubectl edit svc
+kecm      # kubectl edit cm
+kecj      # kubectl edit cj
+ker       # kubectl edit roles
+kecr      # kubectl edit clusterroles
+kerb      # kubectl edit clusterrolebindings
+kesa      # kubectl edit sa
+kenp      # kubectl edit netpol
+```
+#### Describe commands
+```bash
+kd        # kubectl describe
+kdns      # kubectl describe ns
+kdp       # kubectl describe pod
+kds       # kubectl describe secrets
+kdd       # kubectl describe deploy
+kdrs      # kubectl describe rs
+kdss      # kubectl describe sts
+kdds      # kubectl describe ds
+kdsvc     # kubectl describe svc
+kdcm      # kubectl describe cm
+kdcj      # kubectl describe cj
+kdj       # kubectl describe job
+kdsa      # kubectl describe sa
+kdr       # kubectl describe roles
+kdrb      # kubectl describe rolebindings
+kdcr      # kubectl describe clusterroles
+kdcrb     # kubectl describe clusterrolebindings
+kdnp      # kubectl describe netpol
+```
+#### Delete commands
+```bash
+kdel      # kubectl delete
+kdelns    # kubectl delete ns
+kdels     # kubectl delete secrets
+kdelp     # kubectl delete po
+kdeld     # kubectl delete deployment
+kdelrs    # kubectl delete rs
+kdelss    # kubectl delete sts
+kdelds    # kubectl delete ds
+kdelsvc   # kubectl delete svc
+kdelcm    # kubectl delete cm
+kdelcj    # kubectl delete cj
+kdelj     # kubectl delete job
+kdelr     # kubectl delete roles
+kdelrb    # kubectl delete rolebindings
+kdelcr    # kubectl delete clusterroles
+kdelsa    # kubectl delete sa
+kdelnp    # kubectl delete netpol
+```
+#### Mock commands
+```bash
+kmock     # kubectl create mock -o yaml --dry-run=client
+kmockns   # kubectl create ns mock -o yaml --dry-run=client
+kmockcm   # kubectl create cm mock -o yaml --dry-run=client
+kmocksa   # kubectl create sa mock -o yaml --dry-run=client
+```
+#### Config commands
+```bash
+kcfg      # kubectl config
+kcfgv     # kubectl config view
+kcfgns    # kubectl config set-context --current --namespace
+kcfgcurrent # kubectl config current-context
+kcfggc    # kubectl config get-contexts
+kcfgsc    # kubectl config set-context
+kcfguc    # kubectl config use-context
+```
+#### Kubescape related
+```bash
+kssbom    # kubectl -n kubescape get sbomspdxv2p3s
+kssbomf   # kubectl -n kubescape get sbomspdxv2p3filtereds
+kssboms   # kubectl -n kubescape get sbomsummaries
+ksvulns   # kubectl -n kubescape get vulnerabilitymanifestsummaries
+ksvuln    # kubectl -n kubescape get vulnerabilitymanifests
+kssboml   # kubectl -n kubescape get sbomspdxv2p3s --show-labels
+kssbomfl  # kubectl -n kubescape get sbomspdxv2p3filtereds --show-labels
+kssbomsl  # kubectl -n kubescape get sbomsummaries --show-labels
+ksvulnsl  # kubectl -n kubescape get vulnerabilitymanifestsummaries --show-labels
+ksvulnl   # kubectl -n kubescape get vulnerabilitymanifests --show-labels
 ```
 
 ### System Monitoring

@@ -1,6 +1,8 @@
 # Enhanced Zsh Configuration
 
-A **minimal, fast, and safe **``** configuration** designed for developers who want a powerful terminal without unnecessary bloat. Built on **Oh My Zsh** and **Powerlevel10k**, with sensible defaults, productivity aliases, and safety-focused behavior.
+A **minimal, fast, and safe configuration** designed for developers who want a powerful terminal without unnecessary bloat. Built on **Oh My Zsh** and **Powerlevel10k**, with sensible defaults, productivity aliases, and safety-focused behavior.
+
+> 📖 **For comprehensive documentation**, including detailed aliases reference, functions guide, troubleshooting tips, and customization examples, see [README-detailed.md](README-detailed.md).
 
 ## 🚀 Quick Setup
 
@@ -15,7 +17,7 @@ cd ~/zshrc-config
 bash setup.sh
 ```
 
-The setup script will automatically install all required dependencies and configure your `.zshrc` file.
+The setup script will automatically install all required dependencies, configure your `.zshrc` file, and set up tmux configuration (if tmux is installed). On macOS, it also installs `cowsay` and `lolcat` via Homebrew.
 
 ---
 
@@ -61,7 +63,9 @@ The setup script will automatically install all required dependencies and config
 
 ### Optional
 
+- `tmux` - Terminal multiplexer (configuration file will be installed automatically)
 - `fzf`, `tree`, `neofetch`, `ffmpeg`, `pygments`, `cmatrix`, `speedtest-cli`
+- `cowsay`, `lolcat` (macOS only, installed via Homebrew by setup script)
 
 ---
 

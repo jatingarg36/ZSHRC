@@ -46,6 +46,8 @@ info "Detected OS: $OS_TYPE"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ZSHRC_SOURCE="$SCRIPT_DIR/zshrc"
 ZSHRC_TARGET="$HOME/.zshrc"
+TMUX_CONF_SOURCE="$SCRIPT_DIR/tmux.conf"
+TMUX_CONF_TARGET="$HOME/.tmux.conf"
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 # -------------------------
@@ -67,6 +69,85 @@ if ! command -v zsh >/dev/null; then
   exit 1
 else
   success "Zsh found"
+fi
+
+# -------------------------
+# Install Homebrew (macOS only)
+# -------------------------
+if [ "$OS_TYPE" = "macos" ]; then
+  if ! command -v brew >/dev/null; then
+    info "Installing Homebrew"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    success "Homebrew installed"
+  else
+    success "Homebrew already installed"
+  fi
+fi
+
+# -------------------------
+# Install cowsay and lolcat (macOS only)
+# -------------------------
+if [ "$OS_TYPE" = "macos" ]; then
+  if ! command -v brew >/dev/null; then
+    warn "Homebrew not found. Skipping cowsay and lolcat installation"
+  else
+    if ! command -v cowsay >/dev/null; then
+      info "Installing cowsay"
+      brew install cowsay
+      success "cowsay installed"
+    else
+      success "cowsay already installed"
+    fi
+
+    if ! command -v lolcat >/dev/null; then
+      info "Installing lolcat"
+      brew install lolcat
+      success "lolcat installed"
+    else
+      success "lolcat already installed"
+    fi
+  fi
+fi
+
+# -------------------------
+# Install tmux
+# -------------------------
+if ! command -v tmux >/dev/null; then
+  info "Installing tmux"
+  if [ "$OS_TYPE" = "macos" ]; then
+    brew install tmux
+  else
+    warn "tmux not found. Please install it manually:"
+    echo "  sudo apt install tmux"
+  fi
+  success "tmux installed"
+else
+  success "tmux already installed"
+fi
+
+# -------------------------
+# Install .tmux.conf
+# -------------------------
+if command -v tmux >/dev/null; then
+  # Backup existing .tmux.conf
+  if [ -f "$TMUX_CONF_TARGET" ]; then
+    BACKUP="$TMUX_CONF_TARGET.backup.$(date +%Y%m%d_%H%M%S)"
+    info "Backing up existing .tmux.conf → $BACKUP"
+    cp "$TMUX_CONF_TARGET" "$BACKUP"
+    success "Backup created"
+  fi
+
+  # Install new .tmux.conf
+  if [ ! -f "$TMUX_CONF_SOURCE" ]; then
+    error "tmux.conf file not found in repository"
+    exit 1
+  fi
+
+  info "Installing new .tmux.conf"
+  cp "$TMUX_CONF_SOURCE" "$TMUX_CONF_TARGET"
+  success ".tmux.conf installed"
+else
+  warn "tmux not installed. Skipping .tmux.conf installation"
 fi
 
 # -------------------------
