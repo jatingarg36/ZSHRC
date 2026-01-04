@@ -25,6 +25,28 @@ error()   { echo -e "${RED}✖${NC} $*"; }
 
 trap 'error "Setup failed. Aborting."' ERR
 
+# Ask user for yes/no confirmation
+ask_yes_no() {
+  local prompt="$1"
+  local default="${2:-n}"  # Default to 'n' if not provided
+  local response
+
+  while true; do
+    if [ "$default" = "y" ]; then
+      read -p "$(echo -e "${BLUE}?${NC} $prompt [Y/n]: ")" response
+    else
+      read -p "$(echo -e "${BLUE}?${NC} $prompt [y/N]: ")" response
+    fi
+    
+    response=${response:-$default}
+    case "$response" in
+      [Yy]* ) return 0 ;;
+      [Nn]* ) return 1 ;;
+      * ) echo "Please answer yes or no." ;;
+    esac
+  done
+}
+
 # -------------------------
 # OS Detection
 # -------------------------
@@ -85,12 +107,10 @@ if [ "$OS_TYPE" = "macos" ]; then
 fi
 
 # -------------------------
-# Install cowsay and lolcat (macOS only)
+# Install cowsay and lolcat (macOS only, optional)
 # -------------------------
-if [ "$OS_TYPE" = "macos" ]; then
-  if ! command -v brew >/dev/null; then
-    warn "Homebrew not found. Skipping cowsay and lolcat installation"
-  else
+if [ "$OS_TYPE" = "macos" ] && command -v brew >/dev/null; then
+  if ask_yes_no "Install cowsay? (fun ASCII art tool)"; then
     if ! command -v cowsay >/dev/null; then
       info "Installing cowsay"
       brew install cowsay
@@ -98,7 +118,9 @@ if [ "$OS_TYPE" = "macos" ]; then
     else
       success "cowsay already installed"
     fi
+  fi
 
+  if ask_yes_no "Install lolcat? (rainbow text effect)"; then
     if ! command -v lolcat >/dev/null; then
       info "Installing lolcat"
       brew install lolcat
@@ -110,44 +132,49 @@ if [ "$OS_TYPE" = "macos" ]; then
 fi
 
 # -------------------------
-# Install tmux
+# Install tmux (optional)
 # -------------------------
-if ! command -v tmux >/dev/null; then
-  info "Installing tmux"
-  if [ "$OS_TYPE" = "macos" ]; then
-    brew install tmux
+if ask_yes_no "Install tmux? (terminal multiplexer)"; then
+  if ! command -v tmux >/dev/null; then
+    info "Installing tmux"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install tmux
+        success "tmux installed"
+      else
+        warn "Homebrew not found. Please install tmux manually:"
+        echo "  brew install tmux"
+      fi
+    else
+      warn "Please install tmux manually:"
+      echo "  sudo apt install tmux"
+    fi
   else
-    warn "tmux not found. Please install it manually:"
-    echo "  sudo apt install tmux"
-  fi
-  success "tmux installed"
-else
-  success "tmux already installed"
-fi
-
-# -------------------------
-# Install .tmux.conf
-# -------------------------
-if command -v tmux >/dev/null; then
-  # Backup existing .tmux.conf
-  if [ -f "$TMUX_CONF_TARGET" ]; then
-    BACKUP="$TMUX_CONF_TARGET.backup.$(date +%Y%m%d_%H%M%S)"
-    info "Backing up existing .tmux.conf → $BACKUP"
-    cp "$TMUX_CONF_TARGET" "$BACKUP"
-    success "Backup created"
+    success "tmux already installed"
   fi
 
-  # Install new .tmux.conf
-  if [ ! -f "$TMUX_CONF_SOURCE" ]; then
-    error "tmux.conf file not found in repository"
-    exit 1
-  fi
+  # Install .tmux.conf if tmux is available
+  if command -v tmux >/dev/null; then
+    if ask_yes_no "Install .tmux.conf configuration file?"; then
+      # Backup existing .tmux.conf
+      if [ -f "$TMUX_CONF_TARGET" ]; then
+        BACKUP="$TMUX_CONF_TARGET.backup.$(date +%Y%m%d_%H%M%S)"
+        info "Backing up existing .tmux.conf → $BACKUP"
+        cp "$TMUX_CONF_TARGET" "$BACKUP"
+        success "Backup created"
+      fi
 
-  info "Installing new .tmux.conf"
-  cp "$TMUX_CONF_SOURCE" "$TMUX_CONF_TARGET"
-  success ".tmux.conf installed"
-else
-  warn "tmux not installed. Skipping .tmux.conf installation"
+      # Install new .tmux.conf
+      if [ ! -f "$TMUX_CONF_SOURCE" ]; then
+        error "tmux.conf file not found in repository"
+        exit 1
+      fi
+
+      info "Installing new .tmux.conf"
+      cp "$TMUX_CONF_SOURCE" "$TMUX_CONF_TARGET"
+      success ".tmux.conf installed"
+    fi
+  fi
 fi
 
 # -------------------------
@@ -163,19 +190,21 @@ else
 fi
 
 # -------------------------
-# Install Powerlevel10k
+# Install Powerlevel10k (optional)
 # -------------------------
-P10K_DIR="$ZSH_CUSTOM/themes/powerlevel10k"
-if [ ! -d "$P10K_DIR" ]; then
-  info "Installing Powerlevel10k"
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
-  success "Powerlevel10k installed"
-else
-  success "Powerlevel10k already installed"
+if ask_yes_no "Install Powerlevel10k theme? (recommended for zshrc)"; then
+  P10K_DIR="$ZSH_CUSTOM/themes/powerlevel10k"
+  if [ ! -d "$P10K_DIR" ]; then
+    info "Installing Powerlevel10k"
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+    success "Powerlevel10k installed"
+  else
+    success "Powerlevel10k already installed"
+  fi
 fi
 
 # -------------------------
-# Install Plugins
+# Install Plugins (optional)
 # -------------------------
 install_plugin() {
   local name="$1"
@@ -191,11 +220,193 @@ install_plugin() {
   fi
 }
 
-install_plugin "zsh-autosuggestions" \
-  "https://github.com/zsh-users/zsh-autosuggestions.git"
+if ask_yes_no "Install zsh-autosuggestions plugin?"; then
+  install_plugin "zsh-autosuggestions" \
+    "https://github.com/zsh-users/zsh-autosuggestions.git"
+fi
 
-install_plugin "zsh-syntax-highlighting" \
-  "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+if ask_yes_no "Install zsh-syntax-highlighting plugin?"; then
+  install_plugin "zsh-syntax-highlighting" \
+    "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+fi
+
+# -------------------------
+# Install fzf (optional)
+# -------------------------
+if ask_yes_no "Install fzf? (fuzzy finder - used by fcd, fopen, openg functions)"; then
+  if ! command -v fzf >/dev/null; then
+    info "Installing fzf"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install fzf
+        success "fzf installed"
+      else
+        warn "Homebrew not found. Please install fzf manually:"
+        echo "  brew install fzf"
+      fi
+    else
+      warn "Please install fzf manually:"
+      echo "  sudo apt install fzf"
+    fi
+  else
+    success "fzf already installed"
+  fi
+fi
+
+# -------------------------
+# Install tree (optional)
+# -------------------------
+if ask_yes_no "Install tree? (directory tree visualization)"; then
+  if ! command -v tree >/dev/null; then
+    info "Installing tree"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install tree
+        success "tree installed"
+      else
+        warn "Homebrew not found. Please install tree manually:"
+        echo "  brew install tree"
+      fi
+    else
+      warn "Please install tree manually:"
+      echo "  sudo apt install tree"
+    fi
+  else
+    success "tree already installed"
+  fi
+fi
+
+# -------------------------
+# Install neofetch (optional)
+# -------------------------
+if ask_yes_no "Install neofetch? (system information display)"; then
+  if ! command -v neofetch >/dev/null; then
+    info "Installing neofetch"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install neofetch
+        success "neofetch installed"
+      else
+        warn "Homebrew not found. Please install neofetch manually:"
+        echo "  brew install neofetch"
+      fi
+    else
+      warn "Please install neofetch manually:"
+      echo "  sudo apt install neofetch"
+    fi
+  else
+    success "neofetch already installed"
+  fi
+fi
+
+# -------------------------
+# Install ffmpeg (optional)
+# -------------------------
+if ask_yes_no "Install ffmpeg? (video/audio processing - used by vid2gif function)"; then
+  if ! command -v ffmpeg >/dev/null; then
+    info "Installing ffmpeg"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install ffmpeg
+        success "ffmpeg installed"
+      else
+        warn "Homebrew not found. Please install ffmpeg manually:"
+        echo "  brew install ffmpeg"
+      fi
+    else
+      warn "Please install ffmpeg manually:"
+      echo "  sudo apt install ffmpeg"
+    fi
+  else
+    success "ffmpeg already installed"
+  fi
+fi
+
+# -------------------------
+# Install pygments (optional)
+# -------------------------
+if ask_yes_no "Install pygments? (Python syntax highlighter - used by ccat function)"; then
+  if ! command -v pygmentize >/dev/null; then
+    info "Installing pygments"
+    if command -v pip3 >/dev/null; then
+      pip3 install pygments
+      success "pygments installed"
+    elif command -v pip >/dev/null; then
+      pip install pygments
+      success "pygments installed"
+    else
+      warn "pip/pip3 not found. Please install pygments manually:"
+      echo "  pip3 install pygments"
+      echo "  or: pip install pygments"
+    fi
+  else
+    success "pygments already installed"
+  fi
+fi
+
+# -------------------------
+# Install cmatrix (optional)
+# -------------------------
+if ask_yes_no "Install cmatrix? (Matrix effect - fun terminal animation)"; then
+  if ! command -v cmatrix >/dev/null; then
+    info "Installing cmatrix"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install cmatrix
+        success "cmatrix installed"
+      else
+        warn "Homebrew not found. Please install cmatrix manually:"
+        echo "  brew install cmatrix"
+      fi
+    else
+      warn "Please install cmatrix manually:"
+      echo "  sudo apt install cmatrix"
+    fi
+  else
+    success "cmatrix already installed"
+  fi
+fi
+
+# -------------------------
+# Install speedtest-cli (optional)
+# -------------------------
+if ask_yes_no "Install speedtest-cli? (internet speed test tool)"; then
+  if ! command -v speedtest-cli >/dev/null && ! command -v speedtest >/dev/null; then
+    info "Installing speedtest-cli"
+    if [ "$OS_TYPE" = "macos" ]; then
+      if command -v brew >/dev/null; then
+        brew install speedtest-cli
+        success "speedtest-cli installed"
+      else
+        if command -v pip3 >/dev/null; then
+          pip3 install speedtest-cli
+          success "speedtest-cli installed"
+        elif command -v pip >/dev/null; then
+          pip install speedtest-cli
+          success "speedtest-cli installed"
+        else
+          warn "Homebrew and pip not found. Please install speedtest-cli manually:"
+          echo "  brew install speedtest-cli"
+          echo "  or: pip3 install speedtest-cli"
+        fi
+      fi
+    else
+      if command -v pip3 >/dev/null; then
+        pip3 install speedtest-cli
+        success "speedtest-cli installed"
+      elif command -v pip >/dev/null; then
+        pip install speedtest-cli
+        success "speedtest-cli installed"
+      else
+        warn "pip/pip3 not found. Please install speedtest-cli manually:"
+        echo "  pip3 install speedtest-cli"
+        echo "  or: sudo apt install speedtest-cli"
+      fi
+    fi
+  else
+    success "speedtest-cli already installed"
+  fi
+fi
 
 # -------------------------
 # Backup existing .zshrc
@@ -226,10 +437,12 @@ mkdir -p "$HOME/.zsh/cache" "$HOME/.trash" "$HOME/notes"
 success "Required directories created"
 
 # -------------------------
-# Fonts reminder
+# Fonts reminder (if Powerlevel10k is installed)
 # -------------------------
-warn "Powerlevel10k requires a Nerd Font"
-warn "Install one from: https://www.nerdfonts.com/"
+if [ -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
+  warn "Powerlevel10k requires a Nerd Font"
+  warn "Install one from: https://www.nerdfonts.com/"
+fi
 
 # -------------------------
 # Final instructions
@@ -239,7 +452,11 @@ success "Setup complete 🎉"
 echo
 info "Next steps:"
 echo "  1) Restart your terminal OR run: source ~/.zshrc"
-echo "  2) Run: p10k configure"
-echo "  3) (Optional) Change default shell:"
+if [ -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
+  echo "  2) Run: p10k configure"
+  echo "  3) (Optional) Change default shell:"
+else
+  echo "  2) (Optional) Change default shell:"
+fi
 echo "     chsh -s $(command -v zsh)"
 echo
