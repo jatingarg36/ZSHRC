@@ -165,14 +165,17 @@ Required by : none
 
 ## 🖼️ Screenshots
 
+### Fully Automatic Menu
+![Interactive Menu](docs/screenshots/auto_setup.png)
+
 ### Interactive Menu
-![Interactive Menu](docs/screenshots/interactive-menu.png)
+![Interactive Menu](docs/screenshots/interactive_setup.png)
 
 ### Dependency Graph
-![Dependency Graph](docs/screenshots/dependency-graph.png)
+![Dependency Graph](docs/screenshots/dependency_graph.png)
 
 ### Explain Command
-![Explain](docs/screenshots/explain-tmux.png)
+![Explain](docs/screenshots/explain_modules.png)
 
 ---
 
