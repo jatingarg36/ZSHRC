@@ -1,204 +1,184 @@
-# 🛠️ Interactive Zsh Setup & Tooling Installer
+# 🛠️ ZSHRC – Interactive Zsh Setup & Tooling
 
-A **dependency-aware, interactive, and explainable setup system** for Zsh-based developer environments.
+Welcome 👋  
+This project helps you **set up a powerful Zsh-based development environment** in a **safe, modular, and explainable way**.
 
-This project lets you:
-- Install tools **safely** with dependency resolution
-- Select **only the modules you need**
-- Preview changes with **dry-run**
-- Understand **why** something is installed
-- Visualize the **dependency graph**
-
-Built for **power users**, **senior engineers**, and **dotfile minimalists**.
+It is designed for:
+- Developers setting up a new machine
+- Engineers who want control over what gets installed
+- Anyone tired of copy-pasting random dotfiles
 
 ---
 
-## ✨ Features
+## 🚀 Quick Navigation
 
-- ✅ Dependency graph with automatic skipping
-- ✅ Interactive module selection
-- ✅ Install specific modules only
-- ✅ `--dry-run` for safe previews
-- ✅ `--yes` for CI / automation
-- ✅ `--graph` to visualize dependencies
-- ✅ `--explain <module>` for clarity
-- ✅ Idempotent & re-runnable
-- ✅ Modular & extensible architecture
-- ✅ Explicit `--set-shell` flag to safely set Zsh as the default shell
-- ✅ Automatic CI detection to skip shell changes in CI/CD environments
-
+- [Getting Started](#-getting-started)
+- [What This Project Does](#-what-this-project-does)
+- [How It Works](#-how-it-works)
+- [Common Commands](#-common-commands)
+- [Modules Overview](#-modules-overview)
+- [Shell Setup (Zsh)](#-shell-setup-zsh)
+- [Troubleshooting](#-troubleshooting)
+- [Resources](#-resources)
 
 ---
 
-## 📁 Project Structure
+## ✨ What This Project Does
 
-```text
-setup/
-├── setup.sh
-├── lib/                # Core engine & utilities
-├── modules/            # Installable modules
-├── zshrc
-├── tmux.conf
-└── README.md
-````
+This repository provides an **interactive setup system** that lets you:
+
+- Install tools like `zsh`, `tmux`, `fzf`, and more
+- Apply `.zshrc` and `.tmux.conf` safely
+- Understand **dependencies between tools**
+- Preview changes before installing
+- Run the setup multiple times without breaking your system
+
+> Nothing is installed silently. Everything is explicit.
 
 ---
 
-## 🚀 Quick Start
+## 🧠 How It Works
+
+- Each tool or configuration is treated as a **module**
+- Modules declare their **dependencies**
+- The installer resolves dependencies automatically
+- If something is skipped or missing, dependent modules are skipped safely
+- Configuration files are **always updated with backups**
+
+You can explore this visually using the dependency graph.
+
+---
+
+## 🟢 Getting Started
+
+### Clone the repository
 
 ```bash
-git clone <your-repo-url>
-cd setup
+git clone https://github.com/jatingarg36/ZSHRC
+cd ZSHRC
 chmod +x setup.sh
-./setup.sh
 ```
-
-This launches an **interactive menu**.
-
----
-
-## 🔧 Usage
-
-### Install Everything (interactive)
+### Run the setup (recommended)
 
 ```bash
 ./setup.sh
 ```
+This launches an interactive menu where you choose what to install.
 
-### Install Specific Modules
+---
 
+## ⚡ Common Commands
+
+### Install everything (non-interactive)
+```bash
+./setup.sh --yes
+```
+### Preview without installing (dry run)
+```bash
+./setup.sh --dry-run
+```
+### Install specific modules
 ```bash
 ./setup.sh tmux fzf config
 ```
-
-### List Available Modules
-
-```bash
-./setup.sh --list
-```
-
-### Dry Run (no changes made)
-
-```bash
-./setup.sh --dry-run tmux
-```
-
-### Non-interactive / CI Mode
-
-```bash
-./setup.sh --yes zsh ohmyzsh p10k
-```
-
-By default, this setup **does not change your login shell** for safety reasons. 
-If you explicitly want to make **Zsh your default shell**, use the `--set-shell` flag.
-
-### Set Zsh as default shell
-
-```bash
-./setup.sh --set-shell
-```
-This will:
-
-Verify zsh is installed
-
-Ensure it exists in /etc/shells
-
-Change your default login shell using chsh
-
-> ⚠️ You may be prompted for your system password.
-
----
-
-## 🧠 Dependency Graph
-
+### Visualize dependency graph
 ```bash
 ./setup.sh --graph
 ```
-
-Example output:
-
-```text
-zsh
-├── ohmyzsh
-│   ├── p10k
-│   └── zsh-autosuggestions
-├── brew
-│   ├── tmux
-│   └── fzf
-```
-
----
-
-## 📖 Explain a Module
-
+### Explain a module
 ```bash
 ./setup.sh --explain tmux
 ```
 
-Output:
+---
 
-```text
-Module: tmux
-Description : Terminal multiplexer
-Depends on  : brew
-Required by : none
+## 🧩 Modules Overview
+
+Some of the key modules included:
+	•	zsh – Z shell
+	•	ohmyzsh – Zsh framework
+	•	p10k – Powerlevel10k theme
+	•	tmux – Terminal multiplexer
+	•	fzf – Fuzzy finder
+	•	zsh-autosuggestions
+	•	zsh-syntax-highlighting
+	•	config – Installs .zshrc, .tmux.conf, and directories
+
+You can list all available modules anytime:
+```bash
+./setup.sh --list
 ```
 
 ---
 
-## 🧩 Modules Included
+## 🐚 Shell Setup (Zsh)
 
-* `zsh`
-* `brew` (macOS)
-* `tmux`
-* `ohmyzsh`
-* `p10k`
-* `zsh-autosuggestions`
-* `zsh-syntax-highlighting`
-* `fzf`
-* `tree`
-* `neofetch`
-* `ffmpeg`
-* `config` (zshrc, tmux.conf, directories)
+For safety reasons, the installer does not change your default shell automatically.
 
----
-
-## 🖼️ Screenshots
-
-### Fully Automatic Menu
-![Interactive Menu](docs/screenshots/auto_setup.png)
-
-### Interactive Menu
-![Interactive Menu](docs/screenshots/interactive_setup.png)
-
-### Dependency Graph
-![Dependency Graph](docs/screenshots/dependency_graph.png)
-
-### Explain Command
-![Explain](docs/screenshots/explain_modules.png)
+If you explicitly want to switch your default shell to Zsh:
+```bash
+./setup.sh --set-shell
+```
+Or as part of full setup:
+```bash
+./setup.sh --yes --set-shell
+```
+After that, restart your terminal or run:
+```bash
+exec zsh
+```
 
 ---
 
-## ⚠️ Notes
+## 🧪 CI / Automation Safety
 
-* Powerlevel10k requires a **Nerd Font**
-  👉 [https://www.nerdfonts.com](https://www.nerdfonts.com)
-* Linux users may need `sudo` privileges
-* Safe to re-run anytime
+In CI environments (GitHub Actions, GitLab CI, containers):
+	•	Shell changes are automatically skipped
+	•	The installer never fails because of chsh
+
+This makes the project safe for automation.
+
+---
+
+## 🧯 Troubleshooting
+
+### "My shell is still bash"
+
+This is expected.
+Run:
+```bash
+./setup.sh --set-shell
+```
+### "Nothing changed after re-running setup"
+
+Try:
+```bash
+./setup.sh config
+```
+Config modules always re-apply updates with backups.
+
+---
+
+## 🔗 Resources
+
+Useful links to understand the tools used here:
+	•	Zsh: https://www.zsh.org/
+	•	Oh My Zsh: https://ohmyz.sh/
+	•	Powerlevel10k: https://github.com/romkatv/powerlevel10k
+	•	Nerd Fonts (required for p10k): https://www.nerdfonts.com/
+	•	tmux: https://github.com/tmux/tmux
+	•	GitHub Pages: https://pages.github.com/
 
 ---
 
 ## 🤝 Contributing
 
 Contributions are welcome!
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Please see CONTRIBUTING.md￼.
 
 ---
 
-## 📜 License
+## 📌 Project Links
 
-This configuration is provided as-is. Feel free to customize it for your needs.
-
---- 
-
-Simple. Fast. Safe. Enjoy your Zsh ⚡
+* GitHub Repository: https://github.com/jatingarg36/ZSHRC
+* Issues & Suggestions: https://github.com/jatingarg36/ZSHRC/issues
