@@ -101,14 +101,15 @@ This launches an interactive menu where you choose what to install.
 ## 🧩 Modules Overview
 
 Some of the key modules included:
-	•	zsh – Z shell
-	•	ohmyzsh – Zsh framework
-	•	p10k – Powerlevel10k theme
-	•	tmux – Terminal multiplexer
-	•	fzf – Fuzzy finder
-	•	zsh-autosuggestions
-	•	zsh-syntax-highlighting
-	•	config – Installs .zshrc, .tmux.conf, and directories
+
+- **zsh**: Z shell
+- **ohmyzsh**: Zsh framework
+- **p10k**: Powerlevel10k theme
+- **tmux**: Terminal multiplexer
+- **fzf**: Fuzzy finder
+- **zsh-autosuggestions**: Fish-like autosuggestions
+- **zsh-syntax-highlighting**: Syntax highlighting
+- **config**: Installs `.zshrc`, `.tmux.conf`, and base directories
 
 You can list all available modules anytime:
 ```bash
@@ -139,8 +140,9 @@ exec zsh
 ## 🧪 CI / Automation Safety
 
 In CI environments (GitHub Actions, GitLab CI, containers):
-	•	Shell changes are automatically skipped
-	•	The installer never fails because of chsh
+
+- Shell changes are automatically skipped
+- The installer never fails because of chsh
 
 This makes the project safe for automation.
 
@@ -168,12 +170,12 @@ Config modules always re-apply updates with backups.
 ## 🔗 Resources
 
 Useful links to understand the tools used here:
-	•	Zsh: https://www.zsh.org/
-	•	Oh My Zsh: https://ohmyz.sh/
-	•	Powerlevel10k: https://github.com/romkatv/powerlevel10k
-	•	Nerd Fonts (required for p10k): https://www.nerdfonts.com/
-	•	tmux: https://github.com/tmux/tmux
-	•	GitHub Pages: https://pages.github.com/
+- [Zsh](https://www.zsh.org/)
+- [Oh My Zsh](https://ohmyz.sh/)
+- [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
+- [Nerd Fonts](https://www.nerdfonts.com/) (required for p10k)
+- [tmux](https://github.com/tmux/tmux)
+- [GitHub Pages](https://pages.github.com/)
 
 ---
 
