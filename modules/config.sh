@@ -1,9 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
-ZSHRC_SOURCE="$SCRIPT_DIR/zshrc"
-TMUX_CONF_SOURCE="$SCRIPT_DIR/tmux.conf"
+# Relies on BASE_DIR from setup.sh
+ZSHRC_SOURCE="$BASE_DIR/zshrc"
+TMUX_CONF_SOURCE="$BASE_DIR/tmux.conf"
 
 register "config" "zsh tmux ohmyzsh" \
   'false' \

@@ -8,11 +8,14 @@ To automatically set up the Zsh configuration, run the setup script:
 
 ```bash
 # Clone this repository
-git clone https://github.com/jatingarg36/ZSHRC.git ~/zshrc-config
-cd ~/zshrc-config
+git clone https://github.com/jatingarg36/ZSHRC.git setup
+cd setup
 
-# Run the setup script
-bash setup.sh
+# Run the installer
+./install.sh
+
+# Run setup
+zsh-setup
 ```
 
 The setup script will automatically install all required dependencies, configure your `.zshrc` file, and set up tmux configuration (if tmux is installed). On macOS, it also installs `cowsay` and `lolcat` via Homebrew.
@@ -643,4 +646,3 @@ If you encounter issues or have questions:
 ---
 
 **Enjoy your enhanced terminal experience! 🚀**
-

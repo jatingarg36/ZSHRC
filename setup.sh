@@ -1,7 +1,14 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -Eeuo pipefail
 
-BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+# Resolve the real path of the script, handling symlinks
+SOURCE="${(%):-%N}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+BASE_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 
 source "$BASE_DIR/lib/core.sh"
 source "$BASE_DIR/lib/registry.sh"
@@ -17,7 +24,7 @@ TARGETS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --list)
-      for m in "${!MODULE_DEPS[@]}"; do
+      for m in "${(@k)MODULE_DEPS}"; do
         echo "$m"
       done
       exit 0
@@ -43,6 +50,19 @@ while [[ $# -gt 0 ]]; do
       TARGETS+=("set-default-shell")
       shift
       ;;
+    --help|-h)
+      echo "Usage: ./setup.sh [options] [module...]"
+      echo
+      echo "Options:"
+      echo "  --list           List available modules"
+      echo "  --graph          Show dependency graph"
+      echo "  --explain <mod>  Explain a module"
+      echo "  --dry-run        Simulate installation"
+      echo "  --yes, -y        Auto-confirm prompts"
+      echo "  --set-shell      Install set-default-shell module"
+      echo "  --help, -h       Show this help message"
+      exit 0
+      ;;
     *)
       TARGETS+=("$1")
       shift
@@ -54,7 +74,7 @@ done
 if (( ${#TARGETS[@]} == 0 )); then
   if $AUTO_YES; then
     # Non-interactive: install everything
-    TARGETS=("${!MODULE_DEPS[@]}")
+    TARGETS=("${(@k)MODULE_DEPS}")
   else
     # Interactive selection
     select_modules_interactively

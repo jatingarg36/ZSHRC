@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-declare -A MODULE_DEPS MODULE_CHECK MODULE_INSTALL MODULE_DESC
+typeset -A MODULE_DEPS MODULE_CHECK MODULE_INSTALL MODULE_DESC
 
 register() {
   MODULE_DEPS[$1]="$2"

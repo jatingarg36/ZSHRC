@@ -1,14 +1,14 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-declare -A INSTALLED SKIPPED FAILED
+typeset -A INSTALLED SKIPPED FAILED
 
 run_module() {
   local name="$1"
-  local deps="${MODULE_DEPS[$name]}"
+  local deps="${MODULE_DEPS[$name]:-}"
 
   [[ ${INSTALLED[$name]+_} || ${SKIPPED[$name]+_} || ${FAILED[$name]+_} ]] && return
 
-  for dep in $deps; do
+  for dep in ${=deps}; do
     run_module "$dep"
     if [[ ${SKIPPED[$dep]+_} || ${FAILED[$dep]+_} ]]; then
       warn "Skipping $name → dependency '$dep' unavailable"

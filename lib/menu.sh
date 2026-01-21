@@ -1,18 +1,19 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 select_modules_interactively() {
   info "Select modules (space-separated numbers):"
-  local keys=("${!MODULE_DEPS[@]}")
+  local keys=("${(@k)MODULE_DEPS}")
 
-  for i in "${!keys[@]}"; do
-    printf " [%d] %s (deps: %s)\n" "$((i+1))" "${keys[$i]}" "${MODULE_DEPS[${keys[$i]}]:-none}"
+  # Zsh arrays are 1-indexed.
+  for i in {1..$#keys}; do
+    printf " [%d] %s (deps: %s)\n" "$i" "${keys[$i]}" "${MODULE_DEPS[${keys[$i]}]:-none}"
   done
 
   echo
-  read -p "Choice: " -a choices
+  read -A "choices?Choice: "
 
   SELECTED_MODULES=()
   for c in "${choices[@]}"; do
-    SELECTED_MODULES+=("${keys[$((c-1))]}")
+    SELECTED_MODULES+=("${keys[$c]}")
   done
 }

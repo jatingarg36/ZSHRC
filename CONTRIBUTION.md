@@ -42,11 +42,25 @@ This project values **clarity**, **safety**, and **maintainability**.
 
 ## 🧪 Testing Checklist
 
+### Testing Modules
 * [ ] `--dry-run` works
 * [ ] Dependencies respected
 * [ ] Re-running is safe
 * [ ] No silent failures
 * [ ] Works on macOS / Linux (if applicable)
+
+### Testing `install.sh`
+
+Since `install.sh` depends on the GitHub repository, we have a helper script to test it locally against your current changes.
+
+```bash
+# This will test the install flow using your LOCAL repository
+bash test/test-install.sh
+```
+
+* [ ] `~/.zshrc-config` should be created
+* [ ] `zsh-setup` command should be available
+* [ ] Instructions should be clear
 
 ---
 

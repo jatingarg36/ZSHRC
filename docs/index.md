@@ -51,7 +51,13 @@ You can explore this visually using the dependency graph.
 
 ## 🟢 Getting Started
 
-### Clone the repository
+### One-line Install (Recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jatingarg36/ZSHRC/main/install.sh | bash
+```
+
+### Manual Install (Git Clone)
 
 ```bash
 git clone https://github.com/jatingarg36/ZSHRC
@@ -180,5 +186,5 @@ Please see CONTRIBUTING.md￼.
 
 ## 📌 Project Links
 
-* GitHub Repository: https://github.com/jatingarg36/ZSHRC
-* Issues & Suggestions: https://github.com/jatingarg36/ZSHRC/issues
+* [GitHub Repository](https://github.com/jatingarg36/ZSHRC)
+* [Issues & Suggestions](https://github.com/jatingarg36/ZSHRC/issues)

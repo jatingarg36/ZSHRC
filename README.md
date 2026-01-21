@@ -47,13 +47,25 @@ setup/
 ## 🚀 Quick Start
 
 ```bash
+# 1. Clone & Install
 git clone <your-repo-url>
 cd setup
-chmod +x setup.sh
-./setup.sh
+./install.sh
+
+# 2. Run Setup
+zsh-setup
 ```
 
-This launches an **interactive menu**.
+This will clone the configuration to `~/.zshrc-config` and create the `zsh-setup` command.
+
+1. Run the installer:
+   ```bash
+   ./install.sh
+   ```
+2. Configure your shell:
+   ```bash
+   zsh-setup
+   ```
 
 ---
 
@@ -62,31 +74,31 @@ This launches an **interactive menu**.
 ### Install Everything (interactive)
 
 ```bash
-./setup.sh
+zsh-setup
 ```
 
 ### Install Specific Modules
 
 ```bash
-./setup.sh tmux fzf config
+zsh-setup tmux fzf config
 ```
 
 ### List Available Modules
 
 ```bash
-./setup.sh --list
+zsh-setup --list
 ```
 
 ### Dry Run (no changes made)
 
 ```bash
-./setup.sh --dry-run tmux
+zsh-setup --dry-run tmux
 ```
 
 ### Non-interactive / CI Mode
 
 ```bash
-./setup.sh --yes zsh ohmyzsh p10k
+zsh-setup --yes zsh ohmyzsh p10k
 ```
 
 By default, this setup **does not change your login shell** for safety reasons. 
@@ -95,7 +107,7 @@ If you explicitly want to make **Zsh your default shell**, use the `--set-shell`
 ### Set Zsh as default shell
 
 ```bash
-./setup.sh --set-shell
+zsh-setup --set-shell
 ```
 This will:
 
@@ -112,7 +124,7 @@ Change your default login shell using chsh
 ## 🧠 Dependency Graph
 
 ```bash
-./setup.sh --graph
+zsh-setup --graph
 ```
 
 Example output:
@@ -132,7 +144,7 @@ zsh
 ## 📖 Explain a Module
 
 ```bash
-./setup.sh --explain tmux
+zsh-setup --explain tmux
 ```
 
 Output:

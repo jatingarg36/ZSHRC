@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 explain_module() {
   local name="$1"
@@ -11,7 +11,7 @@ explain_module() {
   echo "Depends on  : ${MODULE_DEPS[$name]:-none}"
 
   local used_by=()
-  for m in "${!MODULE_DEPS[@]}"; do
+  for m in "${(@k)MODULE_DEPS}"; do
     [[ " ${MODULE_DEPS[$m]} " =~ " $name " ]] && used_by+=("$m")
   done
 
